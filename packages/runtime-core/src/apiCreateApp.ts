@@ -273,13 +273,15 @@ export function createAppAPI<HostElement>(
         context.directives[name] = directive
         return app
       },
-
+      
+      // 真正的挂载函数
       mount(
         rootContainer: HostElement,
         isHydrate?: boolean,
         isSVG?: boolean
       ): any {
-        if (!isMounted) {
+        if (!isMounted) { // 首次执行未挂载，走这里
+          // 1. 创建根组件的vnode
           const vnode = createVNode(
             rootComponent as ConcreteComponent,
             rootProps

@@ -318,6 +318,7 @@ function baseCreateRenderer(
 ): HydrationRenderer
 
 // implementation
+// 创建渲染函数
 function baseCreateRenderer(
   options: RendererOptions,
   createHydrationFns?: typeof createHydrationFunctions
@@ -1242,7 +1243,8 @@ function baseCreateRenderer(
       }
       return
     }
-
+    // 安装渲染函数副作用
+    // 建立一个更新机制，便于后序如果有数据发生更新，界面也会更新
     setupRenderEffect(
       instance,
       initialVNode,
@@ -1303,6 +1305,9 @@ function baseCreateRenderer(
     isSVG,
     optimized
   ) => {
+    // 组件更新函数
+    // 对patch产生了调用，在调用之前会会获取渲染函数的结果，也就是当前组件的vnode
+    // 在首次执行渲染函数时，其实已经建立了依赖关系
     const componentUpdateFn = () => {
       if (!instance.isMounted) {
         let vnodeHook: VNodeHook | null | undefined
@@ -1479,16 +1484,19 @@ function baseCreateRenderer(
         if (__DEV__) {
           startMeasure(instance, `render`)
         }
+        // 获取最新的vnode
         const nextTree = renderComponentRoot(instance)
         if (__DEV__) {
           endMeasure(instance, `render`)
         }
+        // 获取缓存的oldVnode
         const prevTree = instance.subTree
         instance.subTree = nextTree
 
         if (__DEV__) {
           startMeasure(instance, `patch`)
         }
+        // 执行diff
         patch(
           prevTree,
           nextTree,
@@ -1542,12 +1550,14 @@ function baseCreateRenderer(
     }
 
     // create reactive effect for rendering
+    // 为组件的渲染创建一个响应式的副作用函数
     const effect = (instance.effect = new ReactiveEffect(
-      componentUpdateFn,
-      () => queueJob(instance.update),
+      componentUpdateFn, // 执行函数
+      () => queueJob(instance.update), // scheduler
       instance.scope // track it in component's effect scope
     ))
-
+    
+    // 前面被queueJob的是effect.run
     const update = (instance.update = effect.run.bind(effect) as SchedulerJob)
     update.id = instance.uid
     // allowRecurse
@@ -2306,6 +2316,9 @@ function baseCreateRenderer(
         unmount(container._vnode, null, null, true)
       }
     } else {
+      // 首次patch第一个参数为null
+      // 首次patch是挂载，不更新
+      // 此处vnode会被patch转化为真实dom对象，并追加到container容器中
       patch(container._vnode || null, vnode, container, null, null, null, isSVG)
     }
     flushPostFlushCbs()
