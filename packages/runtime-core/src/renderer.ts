@@ -1296,6 +1296,7 @@ function baseCreateRenderer(
     }
   }
 
+  // 副作用安装函数
   const setupRenderEffect: SetupRenderEffectFn = (
     instance,
     initialVNode,
@@ -1553,7 +1554,7 @@ function baseCreateRenderer(
     // 为组件的渲染创建一个响应式的副作用函数
     const effect = (instance.effect = new ReactiveEffect(
       componentUpdateFn, // 执行函数
-      () => queueJob(instance.update), // scheduler
+      () => queueJob(instance.update), // scheduler定时器任务
       instance.scope // track it in component's effect scope
     ))
     

@@ -237,6 +237,7 @@ function flushJobs(seen?: CountMap) {
   //    priority number)
   // 2. If a component is unmounted during a parent component's update,
   //    its update can be skipped.
+  // 根据id排序
   queue.sort((a, b) => getId(a) - getId(b))
 
   // conditional usage of checkRecursiveUpdate must be determined out of
@@ -249,7 +250,7 @@ function flushJobs(seen?: CountMap) {
     : NOOP
 
   try {
-    for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
+    for (flushIndex = 0; flushIndex < queue.length; flushIndex++) { // 遍历执行任务
       const job = queue[flushIndex]
       if (job && job.active !== false) {
         if (__DEV__ && check(job)) {
