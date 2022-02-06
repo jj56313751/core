@@ -16,7 +16,7 @@
   </div>
   <script>
     const app = Vue.createApp({
-      setup() {
+      setup(props, { emit, slots, attrs }) {
         const counter = Vue.ref(0)
         Vue.onMounted(() => {
           setInterval(() => {
