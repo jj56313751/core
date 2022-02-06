@@ -17,6 +17,9 @@ export function provide<T>(key: InjectionKey<T> | string | number, value: T) {
     // own provides object using parent provides object as prototype.
     // this way in `inject` we can simply look up injections from direct
     // parent and let the prototype chain do the work.
+    //默认情况下，实例继承父类的provides对象
+    //但是当它需要提供自己的provide时，它使用父provide对象作为原型来创建自己的provide对象。。
+    //在' inject '中，我们可以简单地从direct中查找注入父函数，让原型链做这些工作。
     const parentProvides =
       currentInstance.parent && currentInstance.parent.provides
     if (parentProvides === provides) {
@@ -45,11 +48,14 @@ export function inject(
 ) {
   // fallback to `currentRenderingInstance` so that this can be called in
   // a functional component
+  // 回退到' currentRenderingInstance '以便它可以被一个functional components调用
   const instance = currentInstance || currentRenderingInstance
   if (instance) {
     // #2400
     // to support `app.use` plugins,
+    // 支持 `app.use`,
     // fallback to appContext's `provides` if the intance is at root
+    // 如果实例是在根目录,回退到appContext的' provides '中
     const provides =
       instance.parent == null
         ? instance.vnode.appContext && instance.vnode.appContext.provides

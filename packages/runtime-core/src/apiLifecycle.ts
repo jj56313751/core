@@ -21,10 +21,12 @@ export function injectHook(
   prepend: boolean = false
 ): Function | undefined {
   if (target) {
+    // 拿出实例上的hooks
     const hooks = target[type] || (target[type] = [])
     // cache the error handling wrapper for injected hooks so the same hook
     // can be properly deduped by the scheduler. "__weh" stands for "with error
     // handling".
+    // 对用户传入的hook进行包裹
     const wrappedHook =
       hook.__weh ||
       (hook.__weh = (...args: unknown[]) => {
@@ -38,6 +40,7 @@ export function injectHook(
         // This assumes the hook does not synchronously trigger other hooks, which
         // can only be false when the user does something really funky.
         setCurrentInstance(target)
+        // 执行时是否会出错
         const res = callWithAsyncErrorHandling(hook, target, type, args)
         unsetCurrentInstance()
         resetTracking()
@@ -46,6 +49,7 @@ export function injectHook(
     if (prepend) {
       hooks.unshift(wrappedHook)
     } else {
+      // 将hook存在当前组件实例上，将来执行到钩子函数式，循环调用即可
       hooks.push(wrappedHook)
     }
     return wrappedHook

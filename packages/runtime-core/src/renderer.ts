@@ -1197,6 +1197,7 @@ function baseCreateRenderer(
     // mounting
     const compatMountInstance =
       __COMPAT__ && initialVNode.isCompatRoot && initialVNode.component
+    // 1.创建一个组件实例，准确的说是根组件的实例
     const instance: ComponentInternalInstance =
       compatMountInstance ||
       (initialVNode.component = createComponentInstance(
@@ -1224,6 +1225,7 @@ function baseCreateRenderer(
       if (__DEV__) {
         startMeasure(instance, `init`)
       }
+      // 组件实例初始化，等效于vue2源码中 _init()
       setupComponent(instance)
       if (__DEV__) {
         endMeasure(instance, `init`)
