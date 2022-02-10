@@ -184,7 +184,7 @@ export function resetTracking() {
   const last = trackStack.pop()
   shouldTrack = last === undefined ? true : last
 }
-
+// 依赖收集
 export function track(target: object, type: TrackOpTypes, key: unknown) {
   if (!isTracking()) {
     return
@@ -201,7 +201,7 @@ export function track(target: object, type: TrackOpTypes, key: unknown) {
   const eventInfo = __DEV__
     ? { effect: activeEffect, target, type, key }
     : undefined
-
+  // 依赖跟踪
   trackEffects(dep, eventInfo)
 }
 

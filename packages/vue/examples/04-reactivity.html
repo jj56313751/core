@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../dist/vue.global.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <h1>vue3 reactivity API</h1>
+    <p>{{ state.counter }}</p>
+    <p>{{ counter2 }}</p>
+  </div>
+  <script>
+    const app = Vue.createApp({
+      setup(props, { emit, slots, attrs }) {
+        const state = Vue.reactive({
+          counter: 1
+        })
+
+        setInterval(() => {
+          state.counter++
+        }, 1000)
+
+        const counter2 = Vue.ref(1)
+
+        setInterval(() => {
+          counter2.value++
+        }, 1000)
+
+        Vue.watch(() => state.counter, () => {
+
+        })
+
+        Vue.watch(counter2, () => {
+
+        })
+
+        const double = Vue.computed(() => state.counter * 2)
+
+        return {
+          state,
+          counter2
+        }
+      }
+    })
+
+    app.mount('#app')
+  </script>
+</body>
+
+</html>
