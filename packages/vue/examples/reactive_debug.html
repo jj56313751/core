@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../dist/vue.global.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{ state.counter }}</p>
+  </div>
+  <script>
+    const app = Vue.createApp({
+      setup() {
+        const state = Vue.reactive({
+          counter: 1
+        })
+
+        setInterval(() => {
+          state.counter++
+        }, 1000)
+
+        Vue.watch(() => state.counter, () => {
+
+        })
+
+        return {
+          state
+        }
+      }
+    })
+
+    app.mount('#app')
+  </script>
+</body>
+
+</html>
