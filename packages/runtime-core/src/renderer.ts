@@ -1577,7 +1577,8 @@ function baseCreateRenderer(
       // @ts-ignore (for scheduler)
       update.ownerInstance = instance
     }
-
+    
+    // 立刻执行一次
     update()
   }
 

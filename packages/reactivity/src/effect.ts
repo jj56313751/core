@@ -73,10 +73,13 @@ export class ReactiveEffect<T = any> {
 
   run() {
     if (!this.active) {
+      // 没有激活先执行一次组件更新函数
       return this.fn()
     }
+    // effectStack副作用调用栈
     if (!effectStack.includes(this)) {
       try {
+        // activeEffect激活更新函数 赋值为 响应式副作用函数的实例
         effectStack.push((activeEffect = this))
         enableTracking()
 

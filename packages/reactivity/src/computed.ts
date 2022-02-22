@@ -23,6 +23,7 @@ export interface WritableComputedOptions<T> {
   set: ComputedSetter<T>
 }
 
+// 类似于RefImpl
 class ComputedRefImpl<T> {
   public dep?: Dep = undefined
 
@@ -39,6 +40,7 @@ class ComputedRefImpl<T> {
     isReadonly: boolean,
     isSSR: boolean
   ) {
+    // 创建响应式副作用，ReactiveEffect第二个参数scheduler会触发第一个参数fn执行
     this.effect = new ReactiveEffect(getter, () => {
       if (!this._dirty) {
         this._dirty = true
@@ -51,8 +53,11 @@ class ComputedRefImpl<T> {
 
   get value() {
     // the computed ref may get wrapped by other proxies e.g. readonly() #3376
+    // 可能被其他代理包装过，因此先拿到原始数据
     const self = toRaw(this)
+    // 首次执行，收集依赖
     trackRefValue(self)
+    // 立刻执行一次副作用
     if (self._dirty) {
       self._dirty = false
       self._value = self.effect.run()!
@@ -81,6 +86,7 @@ export function computed<T>(
   let getter: ComputedGetter<T>
   let setter: ComputedSetter<T>
 
+  // 如果是函数，传入getter
   const onlyGetter = isFunction(getterOrOptions)
   if (onlyGetter) {
     getter = getterOrOptions
@@ -94,6 +100,7 @@ export function computed<T>(
     setter = getterOrOptions.set
   }
 
+  // 创建computed的ref
   const cRef = new ComputedRefImpl(getter, setter, onlyGetter || !setter, isSSR)
 
   if (__DEV__ && debugOptions && !isSSR) {
